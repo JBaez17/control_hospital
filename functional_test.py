@@ -15,28 +15,33 @@ class TestNuevoVisitante(unittest.TestCase):
 
         # She notices the page title and header mention to-do lists
         self.assertIn('Control Hospital', self.browser.title)
-        self.fail('Completa el test!!!!')
 
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Control Hospital', header_text)
+
+        inputbox = self.browser.find_element_by_id('id_nombre')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Nombre')
 
         inputbox.send_keys('Juan')
 
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_apellido')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
-            'Nombre')
+            'Apellido')
 
         inputbox.send_keys('Baez')
 
         inputbox.send_keys(Keys.ENTER)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find.elements_by_tag_name('tr')
+        table = self.browser.find_element_by_id('id_doctors_table')
+        rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.help_text== '1: Juan Baez' for row in rows))
+            any(row.help_text == '1: Juan Baez' for row in rows),
+            'No aparece ningun nombre en la tabla')
+
+        self.fail('Completa el test!!!!')
 
     def tearDown(self):
         self.browser.quit()
