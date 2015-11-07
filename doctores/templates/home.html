@@ -4,8 +4,10 @@
 	</head>
 	<body>
 		<h1>Control Hospital</h1>
-		<input type="text" id="id_nombre" placeholder="Nombre" />
-		<input type="text" id="id_apellido" placeholder="Apellido" />
+		<form method="POST">
+			<input name="nombre_doc" type="text" id="id_nombre" placeholder="Nombre" />
+			<input name="apellido_doc" type="text" id="id_apellido" placeholder="Apellido" />
+		</form>
 		<table id="id_doctors_table"></table>
 	</body>
 </html>
