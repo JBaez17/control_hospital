@@ -1,0 +1,6 @@
+create database control_hospital;
+
+grant usage on *.* to adminhospital@localhost identified by 'admin';
+
+grant all privileges on control_hospital.* to adminhospital@localhost;
+
