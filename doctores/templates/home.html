@@ -6,11 +6,13 @@
 		<h1>Control Hospital</h1>
 		<form method="POST">
 			<input name="nombre_doc" id="id_nombre" placeholder="Nombre" />
-			<input name="apellido_doc" id="id_apellido" placeholder="Apellido" />
+			
 			{% csrf_token %}
 		</form>
 		<table id="id_doctors_table">
-			<tr><td>1: {{ nuevo_doctor }}</td></tr>
+			{% for doctor in doctores %}
+				<tr><td>{{ forloop.counter }}: {{ doctor.nombre }}</td></tr>
+			{% endfor %}
 		</table>
 	</body>
 </html>

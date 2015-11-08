@@ -26,11 +26,6 @@ class TestNuevoVisitante(unittest.TestCase):
 
         inputbox.send_keys('Juan')
 
-        inputbox = self.browser.find_element_by_id('id_apellido')
-        self.assertEqual(
-            inputbox.get_attribute('placeholder'),
-            'Apellido')
-
         inputbox.send_keys('Baez')
 
         inputbox.send_keys(Keys.ENTER)
@@ -41,10 +36,10 @@ class TestNuevoVisitante(unittest.TestCase):
         table = self.browser.find_element_by_id('id_doctors_table')
         rows = table.find_elements_by_tag_name('tr')
         """self.assertTrue(
-            any(row.text == '1: Juan Baez' for row in rows),
+            any(row.text == '1: Juan' for row in rows),
             'No aparece ningun nombre en la tabla--el texto que aparece es:\n%s'
             % (table.text,))"""
-        self.assertIn('1: Juan Baez', [row.text for row in rows])
+        self.assertIn('1: Juan', [row.text for row in rows])
 
         self.fail('Completa el test!!!!')
 

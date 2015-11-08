@@ -1,11 +1,19 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from doctores.models import Doctor
 
 
 def home_page(request):
-    return render(request, 'home.html', {
-        'nuevo_doctor': request.POST.get('nombre_doc', ''),
-    })
-    """if(request.method == 'POST'):
-        return HttpResponse(request.POST['nombre_doctor'])
-    return render(request, 'home.html')"""
+    """doctor = Doctor()
+    doctor.nombre = request.POST.get('nombre_doc', '')
+    doctor.save()"""
+
+    if request.method == 'POST':
+        # nuevo_doctor = request.POST['nombre_doc']
+        # Doctor.objects.create(nombre=nuevo_doctor)
+        Doctor.objects.create(nombre=request.POST['nombre_doc'])
+        return redirect('/')
+    # else:
+    # nuevo_doctor = ''
+    doctores = Doctor.objects.all()
+
+    return render(request, 'home.html', {'doctores': doctores})

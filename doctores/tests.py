@@ -23,21 +23,53 @@ class TestPaginaPrincipal(TestCase):
         # se usa decode() para convertir la response.content
         # de bytes a una cadena unicode
         """self.assertEqual(response.content.decode(), expected_html)
-        self.assertIn('Nuevo Doctor', response.content.decode())
+        self.assertIn('Juan', response.content.decode())
         expected_html = render_to_string(
             'home.html',
-            {'nuevo_doctor':  'Nuevo Doctor'})"""
+            {'nuevo_doctor':  'Juan'})"""
 
         self.assertEqual(response.content.decode(), expected_html)
 
     def test_pagina_principal_puede_guardar_una_peticion_POST(self):
         request = HttpRequest()
         request.method = 'POST'
-        request.POST['nombre_doc'] = 'Nuevo Doctor'
+        request.POST['nombre_doc'] = 'Juan'
 
         response = home_page(request)
 
-        self.assertIn('Nuevo Doctor', response.content.decode())
+        # self.assertIn('Nuevo Doctor', response.content.decode())
+        self.assertEqual(Doctor.objects.count(), 1)
+        nuevo_doctor = Doctor.objects.first()
+        self.assertEqual(nuevo_doctor.nombre, 'Juan')
+        """expected_html = render_to_string(
+            'home.html',
+            {'nuevo_doctor': 'Juan'})
+        self.assertEqual(response.content.decode(), expected_html)"""
+
+    def test_pagina_principal_redirecciona_despues_de_POST(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['nombre_doc'] = 'Juan'
+
+        response = home_page(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    def test_pagina_principal_solo_guarda_cuando_es_necesario(self):
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Doctor.objects.count(), 0)
+
+    def test_pagina_principal_despliega_todos_los_elementos_de_lista(self):
+        Doctor.objects.create(nombre='Juan')
+        Doctor.objects.create(nombre='Pedro')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertIn('Juan', response.content.decode())
+        self.assertIn('Pedro', response.content.decode())
 
 
 class TestModelDoctores(TestCase):
