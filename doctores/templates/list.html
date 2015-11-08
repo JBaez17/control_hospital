@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<title>Control Hospital</title>
+	</head>
+	<body>
+		<h1>Control Hospital</h1>
+		<form method="POST" action="/">
+			<input name="nombre_doc" id="id_nombre" placeholder="Nombre" />
+			
+			{% csrf_token %}
+		</form>
+		<table id="id_doctors_table">
+			{% for doctor in doctores %}
+				<tr><td>{{ forloop.counter }}: {{ doctor.nombre }}</td></tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>

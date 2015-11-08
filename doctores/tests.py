@@ -54,22 +54,12 @@ class TestPaginaPrincipal(TestCase):
         response = home_page(request)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/la-unica-lista-en-el-mundo/')
 
     def test_pagina_principal_solo_guarda_cuando_es_necesario(self):
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Doctor.objects.count(), 0)
-
-    def test_pagina_principal_despliega_todos_los_elementos_de_lista(self):
-        Doctor.objects.create(nombre='Juan')
-        Doctor.objects.create(nombre='Pedro')
-
-        request = HttpRequest()
-        response = home_page(request)
-
-        self.assertIn('Juan', response.content.decode())
-        self.assertIn('Pedro', response.content.decode())
 
 
 class TestModelDoctores(TestCase):
@@ -90,3 +80,19 @@ class TestModelDoctores(TestCase):
         segundo_doctor_guardado = doctores_guardados[1]
         self.assertEqual(primer_doctor_guardado.nombre, 'Juan')
         self.assertEqual(segundo_doctor_guardado.nombre, 'Pedro')
+
+
+class TestVistaListas(TestCase):
+
+    def test_mostrar_todos_elementos(self):
+        Doctor.objects.create(nombre='Juan')
+        Doctor.objects.create(nombre='Pedro')
+
+        response = self.client.get('/lists/la-unica-lista-en-el-mundo/')
+
+        self.assertContains(response, 'Juan')
+        self.assertContains(response, 'Pedro')
+
+    def test_se_usa_un_template_para_lista(self):
+        response = self.client.get('/lists/la-unica-lista-en-el-mundo/')
+        self.assertTemplateUsed(response, 'list.html')
