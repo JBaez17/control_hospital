@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.home_page, name='home'),
     url(r'^lists/la-unica-lista-en-el-mundo/$', views.view_list, name='lista'),
+    url(r'^doctores/new$', views.nuevo_doctor, name='nuevo_doctor'),
 ]

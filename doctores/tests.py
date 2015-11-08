@@ -16,55 +16,14 @@ class TestPaginaPrincipal(TestCase):
     def test_pagina_principal_retorna_el_html_correcto(self):
         request = HttpRequest()
         response = home_page(request)
-        """self.assertTrue(response.content.startswith("<html>"))
-        self.assertIn(b'<title>Control Hospital</title>', response.content)
-        self.assertTrue(response.content.endswith("</html>"))"""
         expected_html = render_to_string('home.html')
-        # se usa decode() para convertir la response.content
-        # de bytes a una cadena unicode
-        """self.assertEqual(response.content.decode(), expected_html)
-        self.assertIn('Juan', response.content.decode())
-        expected_html = render_to_string(
-            'home.html',
-            {'nuevo_doctor':  'Juan'})"""
 
         self.assertEqual(response.content.decode(), expected_html)
-
-    def test_pagina_principal_puede_guardar_una_peticion_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['nombre_doc'] = 'Juan'
-
-        response = home_page(request)
-
-        # self.assertIn('Nuevo Doctor', response.content.decode())
-        self.assertEqual(Doctor.objects.count(), 1)
-        nuevo_doctor = Doctor.objects.first()
-        self.assertEqual(nuevo_doctor.nombre, 'Juan')
-        """expected_html = render_to_string(
-            'home.html',
-            {'nuevo_doctor': 'Juan'})
-        self.assertEqual(response.content.decode(), expected_html)"""
-
-    def test_pagina_principal_redirecciona_despues_de_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['nombre_doc'] = 'Juan'
-
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/la-unica-lista-en-el-mundo/')
-
-    def test_pagina_principal_solo_guarda_cuando_es_necesario(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Doctor.objects.count(), 0)
 
 
 class TestModelDoctores(TestCase):
 
-    def test_guardando_y_obteniendo_dactores(self):
+    def test_guardando_y_obteniendo_doctores(self):
         primer_doctor = Doctor()
         primer_doctor.nombre = 'Juan'
         primer_doctor.save()
@@ -96,3 +55,36 @@ class TestVistaListas(TestCase):
     def test_se_usa_un_template_para_lista(self):
         response = self.client.get('/lists/la-unica-lista-en-el-mundo/')
         self.assertTemplateUsed(response, 'list.html')
+
+
+class TestListaNueva(TestCase):
+
+    def test_guardar_una_peticion_POST(self):
+        self.client.post(
+            '/doctores/new',
+            data={'nombre_doc': 'Juan'}
+        )
+        """request = HttpRequest()
+        request.method = 'POST'
+        request.POST['nombre_doc'] = 'Juan'
+
+        response = home_page(request)"""
+
+        self.assertEqual(Doctor.objects.count(), 1)
+        nuevo_doctor = Doctor.objects.first()
+        self.assertEqual(nuevo_doctor.nombre, 'Juan')
+
+    def test_redirecciona_despues_de_POST(self):
+        response = self.client.post(
+            '/doctores/new',
+            data={'nombre_doc': 'Juan'}
+        )
+        """request = HttpRequest()
+        request.method = 'POST'
+        request.POST['nombre_doc'] = 'Juan'
+
+        response = home_page(request)"""
+
+        self.assertRedirects(response, '/lists/la-unica-lista-en-el-mundo/')
+        #self.assertEqual(response.status_code, 302)
+        #self.assertEqual(response['location'], '/lists/la-unica-lista-en-el-mundo/')
